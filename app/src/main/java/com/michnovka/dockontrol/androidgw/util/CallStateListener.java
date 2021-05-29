@@ -4,6 +4,7 @@ import android.content.Context;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -36,14 +37,16 @@ public class CallStateListener extends PhoneStateListener {
     public void onCallStateChanged(int state, String phoneNumber) {
         super.onCallStateChanged(state, phoneNumber);
         if (state == TelephonyManager.CALL_STATE_RINGING) {
-            String time = mHelper.getCurrentTime();
+            long time = System.currentTimeMillis();
             String api_secret = sharedPreferenceHelper.getSecret();
+            String hash = mHelper.toSHA256(phoneNumber, time, api_secret);
 
             HashMap<String, String> params = new HashMap<>();
-            params.put("caller_number", mHelper.toSHA256(phoneNumber));
-            params.put("time", mHelper.toSHA256(time));
-            params.put("api_secret", mHelper.toSHA256(api_secret));
+            params.put("caller_number", phoneNumber);
+            params.put("time", String.valueOf(time));
+            params.put("hash", hash);
 
+            System.out.println(params);
             sendToServer(params);
         }
     }

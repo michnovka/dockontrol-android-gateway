@@ -8,7 +8,6 @@ import android.telecom.TelecomManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -62,12 +61,17 @@ public class CallStateListener extends PhoneStateListener {
 
     private void sendToServer(HashMap<String, String> params) {
         StringRequest request = new StringRequest(Request.Method.POST, "https://" + sharedPreferenceHelper.getUrl(), new Response.Listener<String>() {
+            @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
             public void onResponse(String response) {
                 Gson gson = new Gson();
-                ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
-                if (serverResponse.getAction().equalsIgnoreCase("hung-up")) {
-                    hangUpCall();
+                try {
+                    ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                    if (serverResponse.getAction().equalsIgnoreCase("hung-up")) {
+                        hangUpCall();
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getLocalizedMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -106,7 +110,7 @@ public class CallStateListener extends PhoneStateListener {
             return;
         }
 
-        if (telecomManager.isInCall()){
+        if (telecomManager.isInCall()) {
             telecomManager.endCall();
         }
     }

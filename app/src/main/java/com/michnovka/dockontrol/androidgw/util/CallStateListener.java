@@ -1,12 +1,18 @@
 package com.michnovka.dockontrol.androidgw.util;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.telecom.TelecomManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -17,9 +23,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.michnovka.dockontrol.androidgw.model.ServerResponse;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.Context.TELECOM_SERVICE;
 
 public class CallStateListener extends PhoneStateListener {
 
@@ -46,16 +56,19 @@ public class CallStateListener extends PhoneStateListener {
             params.put("time", String.valueOf(time));
             params.put("hash", hash);
 
-            System.out.println(params);
             sendToServer(params);
         }
     }
 
     private void sendToServer(HashMap<String, String> params) {
-        StringRequest request = new StringRequest(Request.Method.POST, sharedPreferenceHelper.getUrl(), new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, "https://" + sharedPreferenceHelper.getUrl(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
+                Gson gson = new Gson();
+                ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                if (serverResponse.getAction().equalsIgnoreCase("hung-up")) {
+                    hangUpCall();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -84,6 +97,18 @@ public class CallStateListener extends PhoneStateListener {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void hangUpCall() {
+        TelecomManager telecomManager = (TelecomManager) mContext.getSystemService(TELECOM_SERVICE);
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        if (telecomManager.isInCall()){
+            telecomManager.endCall();
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Switch mAppStatus;
     private Button mSave;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         initFields();
         askForPermission(Manifest.permission.READ_CALL_LOG, 1001);
         askForPermission(Manifest.permission.READ_PHONE_STATE, 1002);
+        askForPermission(Manifest.permission.ANSWER_PHONE_CALLS, 1003);
     }
 
     private void initComponents() {

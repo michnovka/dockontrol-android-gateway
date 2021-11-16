@@ -1,8 +1,11 @@
 package com.michnovka.dockontrol.androidgw.util;
 
+import static com.michnovka.dockontrol.androidgw.App.CHANNEL_ID;
+
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
@@ -13,9 +16,13 @@ import androidx.core.app.NotificationCompat;
 import com.michnovka.dockontrol.androidgw.R;
 import com.michnovka.dockontrol.androidgw.ui.MainActivity;
 
-import static com.michnovka.dockontrol.androidgw.App.CHANNEL_ID;
-
 public class ForegroundService extends Service {
+
+    public static boolean isRunning = false;
+    private Context mContext;
+    private Helper mHelper;
+    private SharedPreferenceHelper sharedPreferenceHelper;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -25,9 +32,12 @@ public class ForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        this.mContext = getApplicationContext();
+        mHelper = new Helper();
+        sharedPreferenceHelper = new SharedPreferenceHelper(mContext);
     }
 
-    public static boolean isRunning = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -44,9 +54,9 @@ public class ForegroundService extends Service {
 
         startForeground(1, notification);
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("android.intent.action.PHONE_STATE");
-        registerReceiver(new IncomingCallReceiver(getApplicationContext()), filter);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction("android.intent.action.PHONE_STATE");
+//        getApplicationContext().registerReceiver(new IncomingCallReceiver(), filter);
         return START_NOT_STICKY;
     }
 

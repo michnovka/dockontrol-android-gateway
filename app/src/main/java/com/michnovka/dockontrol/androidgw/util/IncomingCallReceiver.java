@@ -9,18 +9,17 @@ import android.telephony.TelephonyManager;
 
 public class IncomingCallReceiver extends BroadcastReceiver {
 
-    private final Context mContext;
-    private static CallStateListener phoneListener;
+    private CallStateListener phoneListener;
 
-    public IncomingCallReceiver(Context mContext) {
-        this.mContext = mContext;
+    public IncomingCallReceiver() {
     }
+
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
         if (phoneListener == null) {
-            phoneListener = new CallStateListener(mContext);
+            phoneListener = new CallStateListener(context);
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
             tm.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
         }

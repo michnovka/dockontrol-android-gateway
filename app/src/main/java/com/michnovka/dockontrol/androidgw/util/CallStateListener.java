@@ -1,5 +1,7 @@
 package com.michnovka.dockontrol.androidgw.util;
 
+import static android.content.Context.TELECOM_SERVICE;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -27,8 +29,6 @@ import com.michnovka.dockontrol.androidgw.model.ServerResponse;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static android.content.Context.TELECOM_SERVICE;
 
 public class CallStateListener extends PhoneStateListener {
 
@@ -109,7 +109,6 @@ public class CallStateListener extends PhoneStateListener {
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-
         if (telecomManager.isInCall()) {
             telecomManager.endCall();
         }

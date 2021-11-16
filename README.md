@@ -5,4 +5,4 @@ This apk is meant to be installed on an Android 9+ device and will send API noti
 
 ## Credits
 
-https://github.com/DevKish0n
+https://github.com/kish0n-eng

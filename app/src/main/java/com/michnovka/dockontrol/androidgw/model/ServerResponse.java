@@ -10,4 +10,11 @@ public class ServerResponse {
     public void setAction(String action) {
         this.action = action;
     }
+
+    @Override
+    public String toString() {
+        return "ServerResponse{" +
+                "action='" + action + '\'' +
+                '}';
+    }
 }

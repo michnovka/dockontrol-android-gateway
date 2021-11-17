@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DOCKontrolAndroidGateway"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.MainActivity"
+        <activity
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,14 +27,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".util.ForegroundService"/>
+        <service android:name=".util.ForegroundService" />
 
-        <receiver android:name=".util.IncomingCallReceiver"
+        <receiver
+            android:name=".util.IncomingCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
         </receiver>
     </application>

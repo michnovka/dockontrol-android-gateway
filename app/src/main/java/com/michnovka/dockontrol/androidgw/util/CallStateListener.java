@@ -55,11 +55,19 @@ public class CallStateListener extends PhoneStateListener {
             params.put("time", String.valueOf(time));
             params.put("hash", hash);
 
-            sendToServer(params);
+            if (ForegroundService.isRunning && !ForegroundService.number.equals(phoneNumber)) {
+                ForegroundService.number = phoneNumber;
+                sendToServer(params);
+            }
+
+        } else if (state == TelephonyManager.CALL_STATE_IDLE) {
+            ForegroundService.number = "null";
         }
     }
 
     private void sendToServer(HashMap<String, String> params) {
+        Log.d("TAG", "sendToServer: " + params.toString());
+
         StringRequest request = new StringRequest(Request.Method.POST, "https://" + sharedPreferenceHelper.getUrl(), new Response.Listener<String>() {
             @RequiresApi(api = Build.VERSION_CODES.P)
             @Override
@@ -67,6 +75,7 @@ public class CallStateListener extends PhoneStateListener {
                 Gson gson = new Gson();
                 try {
                     ServerResponse serverResponse = gson.fromJson(response, ServerResponse.class);
+                    Log.d("onResponse: ", serverResponse.toString());
                     if (serverResponse.getAction().equalsIgnoreCase("hung-up")) {
                         hangUpCall();
                     }

@@ -19,6 +19,8 @@ import com.michnovka.dockontrol.androidgw.ui.MainActivity;
 public class ForegroundService extends Service {
 
     public static boolean isRunning = false;
+    public static String number = "null";
+
     private Context mContext;
     private Helper mHelper;
     private SharedPreferenceHelper sharedPreferenceHelper;
@@ -56,7 +58,8 @@ public class ForegroundService extends Service {
 
 //        IntentFilter filter = new IntentFilter();
 //        filter.addAction("android.intent.action.PHONE_STATE");
-//        getApplicationContext().registerReceiver(new IncomingCallReceiver(), filter);
+//        registerReceiver(new IncomingCallReceiver(), filter);
+
         return START_NOT_STICKY;
     }
 

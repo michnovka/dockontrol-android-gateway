@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferenceHelper sharedPreference;
     private TextInputLayout mApiUrl, mApiSecret;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch mAppStatus;
+    private Switch mAppStatus, mStartOnReboot;
     private Button mSave;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         mApiSecret = findViewById(R.id.text_secret);
         mAppStatus = findViewById(R.id.switch_status);
         mSave = findViewById(R.id.btn_save);
+        mStartOnReboot = findViewById(R.id.switch_boot);
+
     }
 
     private void initFields() {
@@ -61,19 +63,21 @@ public class MainActivity extends AppCompatActivity {
         mApiUrl.getEditText().setText(url);
         mApiSecret.getEditText().setText(secret);
         mAppStatus.setChecked(status);
+        mStartOnReboot.setChecked(sharedPreference.getBoot());
     }
 
     public void saveData(View view) {
         String url = mApiUrl.getEditText().getText().toString();
         String secret = mApiSecret.getEditText().getText().toString();
         boolean status = mAppStatus.isChecked();
+        boolean boot = mStartOnReboot.isChecked();
 
         if (TextUtils.isEmpty(url)) {
             mApiUrl.setError("Please enter url");
         } else if (TextUtils.isEmpty(secret)) {
             mApiSecret.setError("Please enter secret");
         } else {
-            if (sharedPreference.setUrl(url) && sharedPreference.setSecret(secret) && sharedPreference.setStatus(status)) {
+            if (sharedPreference.setUrl(url) && sharedPreference.setSecret(secret) && sharedPreference.setStatus(status) && sharedPreference.setBoot(boot)) {
                 Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
             }
         }

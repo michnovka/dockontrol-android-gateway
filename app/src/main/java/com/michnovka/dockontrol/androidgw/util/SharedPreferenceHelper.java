@@ -11,6 +11,7 @@ public class SharedPreferenceHelper {
     private final String status = "STATUS";
     private final String url = "URL";
     private final String secret = "SECRET";
+    private static final String BOOT_KAY = "BOOT_KAY";
 
     @SuppressLint("CommitPrefEdits")
     public SharedPreferenceHelper(Context context) {
@@ -44,5 +45,14 @@ public class SharedPreferenceHelper {
 
     public boolean getStatus(){
         return preferences.getBoolean(status, false);
+    }
+
+    public boolean setBoot(boolean value){
+        editor.putBoolean(BOOT_KAY, value);
+        return editor.commit();
+    }
+
+    public boolean getBoot(){
+        return preferences.getBoolean(BOOT_KAY, false);
     }
 }

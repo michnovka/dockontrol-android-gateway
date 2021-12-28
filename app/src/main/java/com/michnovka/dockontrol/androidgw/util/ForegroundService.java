@@ -5,9 +5,9 @@ import static com.michnovka.dockontrol.androidgw.App.CHANNEL_ID;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
@@ -20,10 +20,7 @@ public class ForegroundService extends Service {
 
     public static boolean isRunning = false;
     public static String number = "null";
-
-    private Context mContext;
-    private Helper mHelper;
-    private SharedPreferenceHelper sharedPreferenceHelper;
+    private ComponentName component;
 
     @Nullable
     @Override
@@ -34,10 +31,7 @@ public class ForegroundService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        this.mContext = getApplicationContext();
-        mHelper = new Helper();
-        sharedPreferenceHelper = new SharedPreferenceHelper(mContext);
+        component = new ComponentName(getApplicationContext(), IncomingCallReceiver.class);
     }
 
 
@@ -54,11 +48,8 @@ public class ForegroundService extends Service {
                 .setPriority(Notification.PRIORITY_DEFAULT)
                 .build();
 
+        getApplicationContext().getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
         startForeground(1, notification);
-
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction("android.intent.action.PHONE_STATE");
-//        registerReceiver(new IncomingCallReceiver(), filter);
 
         return START_NOT_STICKY;
     }
@@ -67,6 +58,7 @@ public class ForegroundService extends Service {
     @Override
     public void onDestroy() {
         isRunning = false;
+        getApplicationContext().getPackageManager().setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
         super.onDestroy();
     }
 }
